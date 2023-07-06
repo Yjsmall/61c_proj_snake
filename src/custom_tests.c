@@ -9,12 +9,10 @@
 
 /* Look at asserts.c for some helpful assert functions */
 
-int greater_than_forty_two(int x) {
-  return x > 42;
-}
+int greater_than_forty_two(int x) { return x > 42; }
 
 bool is_vowel(char c) {
-  char* vowels = "aeiouAEIOU";
+  char *vowels = "aeiouAEIOU";
   for (int i = 0; i < strlen(vowels); i++) {
     if (c == vowels[i]) {
       return true;
@@ -25,8 +23,8 @@ bool is_vowel(char c) {
 
 /*
   Example 1: Returns true if all test cases pass. False otherwise.
-    The function greater_than_forty_two(int x) will return true if x > 42. False otherwise.
-    Note: This test is NOT comprehensive
+    The function greater_than_forty_two(int x) will return true if x > 42. False
+  otherwise. Note: This test is NOT comprehensive
 */
 bool test_greater_than_forty_two() {
   int testcase_1 = 42;
@@ -52,9 +50,8 @@ bool test_greater_than_forty_two() {
 
 /*
   Example 2: Returns true if all test cases pass. False otherwise.
-    The function is_vowel(char c) will return true if c is a vowel (i.e. c is a,e,i,o,u)
-    and returns false otherwise
-    Note: This test is NOT comprehensive
+    The function is_vowel(char c) will return true if c is a vowel (i.e. c is
+  a,e,i,o,u) and returns false otherwise Note: This test is NOT comprehensive
 */
 bool test_is_vowel() {
   char testcase_1 = 'a';
@@ -99,37 +96,119 @@ bool test_is_vowel() {
 /* Task 4.1 */
 
 bool test_is_tail() {
-  // TODO: Implement this function.
+  const char *TAIL = "wasd";
+  for (size_t i = 0; i < strlen(TAIL); i++) {
+    bool test_tail = is_tail(TAIL[i]);
+    if (!assert_true("test_is_tail", test_tail)) {
+      return false;
+    }
+  }
   return true;
 }
 
 bool test_is_head() {
-  // TODO: Implement this function.
+  const char *HEAD = "WASDx";
+  for (size_t i = 0; i < strlen(HEAD); i++) {
+    bool test_head = is_head(HEAD[i]);
+    if (!assert_true("test_is_head", test_head)) {
+      return false;
+    }
+  }
   return true;
 }
 
 bool test_is_snake() {
-  // TODO: Implement this function.
+  const char *SNAKE = "wasd^<v>WASDx";
+  for (size_t i = 0; i < strlen(SNAKE); i++) {
+    bool test_snake = is_snake(SNAKE[i]);
+    if (!assert_true("test_is_snake", test_snake)) {
+      return false;
+    }
+  }
   return true;
 }
 
+bool char_equal(char first, char second) {
+  return first == second ? true : false;
+}
+
 bool test_body_to_tail() {
-  // TODO: Implement this function.
+  const char *BODY = "^<v>x";
+  const char *TAIL = "wasd?";
+  for (size_t i = 0; i < strlen(BODY); i++) {
+    char c = body_to_tail(BODY[i]);
+    bool res = char_equal(TAIL[i], c);
+    if (!assert_true("test_is_snake", res)) {
+      return false;
+    }
+  }
   return true;
 }
 
 bool test_head_to_body() {
   // TODO: Implement this function.
+  const char *HEAD = "WASDx";
+  const char *BODY = "^<v>?";
+  for (size_t i = 0; i < strlen(BODY); i++) {
+    char c = head_to_body(HEAD[i]);
+    bool res = char_equal(BODY[i], c);
+    if (!assert_true("test_is_head_to_body", res)) {
+      return false;
+    }
+  }
   return true;
 }
 
+bool int_equal(unsigned int first, unsigned int second) {
+  return first == second ? true : false;
+}
+
 bool test_get_next_row() {
-  // TODO: Implement this function.
+  const char *DOWN = "vsS";
+  const char *UP = "^wW";
+  const char *others = "???";
+  unsigned int nums[] = {0, 1, 2};
+  unsigned int base = 1;
+
+  for (int i = 0; i < strlen(DOWN); i++) {
+    unsigned int l = get_next_row(base, DOWN[i]);
+    unsigned int r = get_next_row(base, UP[i]);
+    unsigned int m = get_next_row(base, others[i]);
+    if (!assert_true("test_get_next_row", int_equal(l, nums[2]))) {
+      return false;
+    }
+    if (!assert_true("test_get_next_row", int_equal(m, nums[1]))) {
+      return false;
+    }
+    if (!assert_true("test_get_next_row", int_equal(r, nums[0]))) {
+      return false;
+    }
+  }
   return true;
 }
 
 bool test_get_next_col() {
   // TODO: Implement this function.
+  const char *RIGHT = ">dD";
+  const char *LEFT = "<aA";
+  const char *others = "???";
+  unsigned int nums[] = {0, 1, 2};
+  unsigned int base = 1;
+
+  for (int i = 0; i < strlen(RIGHT); i++) {
+    unsigned int l = get_next_col(base, RIGHT[i]);
+    unsigned int r = get_next_col(base, LEFT[i]);
+    unsigned int m = get_next_col(base, others[i]);
+    if (!assert_true("test_get_next_col", int_equal(l, nums[2]))) {
+      return false;
+    }
+    if (!assert_true("test_get_next_col", int_equal(m, nums[1]))) {
+      return false;
+    }
+    if (!assert_true("test_get_next_col", int_equal(r, nums[0]))) {
+      return false;
+    }
+  }
   return true;
 }
 
@@ -173,7 +252,7 @@ bool test_customs() {
   return true;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   init_colors();
 
   if (!test_and_print("custom", test_customs)) {
