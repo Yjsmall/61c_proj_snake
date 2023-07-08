@@ -1,6 +1,7 @@
 #include "state.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +72,6 @@ void free_state(game_state_t *state) {
 
   free(state);
   state = NULL;
-  return;
 }
 
 /* Task 3 */
@@ -79,7 +79,6 @@ void print_board(game_state_t *state, FILE *fp) {
   for (int i = 0; i < state->num_rows; i++) {
     fprintf(fp, "%s\n", state->board[i]);
   }
-  return;
 }
 
 /*
@@ -313,7 +312,7 @@ static void update_tail(game_state_t *state, unsigned int snum) {
 /* Task 4.5 */
 void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
   unsigned int num_snakes = state->num_snakes;
-  for (size_t i = 0; i < num_snakes; i++) {
+  for (unsigned int i = 0; i < num_snakes; i++) {
     unsigned int head_row = state->snakes[i].head_row;
     unsigned int head_col = state->snakes[i].head_col;
 
@@ -334,8 +333,43 @@ void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
 
 /* Task 5 */
 game_state_t *load_board(FILE *fp) {
-  // TODO: Implement this function.
-  return NULL;
+  if (fp == NULL) {
+    return NULL;
+  }
+
+  game_state_t *state = malloc(sizeof(game_state_t));
+  unsigned int base = 10;
+  unsigned int cnt = 0;
+  char buf[1024];
+
+  state->board = malloc(sizeof(char *) * base);
+
+  while (fgets(buf, sizeof(buf), fp) != NULL) {
+    state->board[cnt] = malloc(sizeof(char) * 1024);
+
+    strcpy(state->board[cnt], buf);
+
+    cnt++;
+
+    if (cnt == base) {
+      base *= 2;
+      char **tmp = realloc(state->board, sizeof(char *) * base);
+      if (tmp == NULL) {
+        for (size_t i = 0; i < base; i++) {
+          free(state->board[i]);
+        }
+        free(state->board);
+        return NULL;
+      } else {
+        state->board = tmp;
+      }
+    }
+  }
+  state->num_rows = cnt;
+  state->num_snakes = 0;
+  state->snakes = NULL;
+
+  return state;
 }
 
 /*
