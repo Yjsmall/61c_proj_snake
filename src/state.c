@@ -348,17 +348,22 @@ game_state_t *load_board(FILE *fp) {
     state->board[cnt] = malloc(sizeof(char) * 1024);
 
     strcpy(state->board[cnt], buf);
+    size_t end = strlen(state->board[cnt]) - 1;
+    state->board[cnt][end] = '\0';
 
     cnt++;
 
     if (cnt == base) {
       base *= 2;
+      // After using realloc, don't use previous ptr and use the return ptr
+      // value.
       char **tmp = realloc(state->board, sizeof(char *) * base);
       if (tmp == NULL) {
         for (size_t i = 0; i < base; i++) {
           free(state->board[i]);
         }
         free(state->board);
+        state->board = NULL;
         return NULL;
       } else {
         state->board = tmp;
