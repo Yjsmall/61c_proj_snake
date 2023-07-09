@@ -386,12 +386,35 @@ game_state_t *load_board(FILE *fp) {
   fill in the head row and col in the struct.
 */
 static void find_head(game_state_t *state, unsigned int snum) {
-  // TODO: Implement this function.
-  return;
+  unsigned int row = state->snakes[snum].tail_row;
+  unsigned int col = state->snakes[snum].tail_col;
+  char c = get_board_at(state, row, col);
+  while (!is_head(c)) {
+    row = get_next_row(row, c);
+    col = get_next_col(col, c);
+    c = get_board_at(state, row, col);
+  }
+  state->snakes[snum].head_row = row;
+  state->snakes[snum].head_col = col;
 }
 
 /* Task 6.2 */
 game_state_t *initialize_snakes(game_state_t *state) {
-  // TODO: Implement this function.
-  return NULL;
+  unsigned int num_snakes = 0;
+  for (unsigned int i = 0; i < state->num_rows; i++) {
+    for (unsigned int j = 0; j < strlen(state->board[i]); j++) {
+      char c = get_board_at(state, i, j);
+      if (is_tail(c)) {
+        num_snakes++;
+        state->snakes = realloc(state->snakes, sizeof(snake_t) * num_snakes);
+        state->snakes->tail_row = i;
+        state->snakes->tail_col = j;
+        find_head(state, num_snakes - 1);
+        state->snakes[num_snakes - 1].live = true;
+      }
+    }
+  }
+  state->num_snakes = num_snakes;
+
+  return state;
 }
