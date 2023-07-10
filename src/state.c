@@ -243,11 +243,8 @@ static char next_square(game_state_t *state, unsigned int snum) {
   if (!is_head(head)) {
     return '?';
   } else {
-    if (head == 'W' || head == 'S') {
-      head_row = get_next_row(head_row, head);
-    } else {
-      head_col = get_next_col(head_col, head);
-    }
+    head_row = get_next_row(head_row, head);
+    head_col = get_next_col(head_col, head);
   }
   return get_board_at(state, head_row, head_col);
 }
@@ -271,13 +268,10 @@ static void update_head(game_state_t *state, unsigned int snum) {
   char body = head_to_body(head);
   set_board_at(state, head_row, head_col, body);
 
-  if (head == 'W' || head == 'S') {
-    head_row = get_next_row(head_row, head);
-    state->snakes[snum].head_row = head_row;
-  } else {
-    head_col = get_next_col(head_col, head);
-    state->snakes[snum].head_col = head_col;
-  }
+  head_row = get_next_row(head_row, head);
+  head_col = get_next_col(head_col, head);
+  state->snakes[snum].head_row = head_row;
+  state->snakes[snum].head_col = head_col;
   set_board_at(state, head_row, head_col, head);
 }
 
@@ -297,13 +291,10 @@ static void update_tail(game_state_t *state, unsigned int snum) {
   char tail = get_board_at(state, tail_row, tail_col);
   set_board_at(state, tail_row, tail_col, ' ');
 
-  if (tail == 'w' || tail == 's') {
-    tail_row = get_next_row(tail_row, tail);
-    state->snakes[snum].tail_row = tail_row;
-  } else {
-    tail_col = get_next_col(tail_col, tail);
-    state->snakes[snum].tail_col = tail_col;
-  }
+  tail_row = get_next_row(tail_row, tail);
+  tail_col = get_next_col(tail_col, tail);
+  state->snakes[snum].tail_row = tail_row;
+  state->snakes[snum].tail_col = tail_col;
   tail = get_board_at(state, tail_row, tail_col);
   tail = body_to_tail(tail);
   set_board_at(state, tail_row, tail_col, tail);
@@ -354,7 +345,7 @@ game_state_t *load_board(FILE *fp) {
     cnt++;
 
     if (cnt == base) {
-      base *= 2;
+      base++;
       // After using realloc, don't use previous ptr and use the return ptr
       // value.
       char **tmp = realloc(state->board, sizeof(char *) * base);
@@ -407,8 +398,8 @@ game_state_t *initialize_snakes(game_state_t *state) {
       if (is_tail(c)) {
         num_snakes++;
         state->snakes = realloc(state->snakes, sizeof(snake_t) * num_snakes);
-        state->snakes->tail_row = i;
-        state->snakes->tail_col = j;
+        state->snakes[num_snakes - 1].tail_row = i;
+        state->snakes[num_snakes - 1].tail_col = j;
         find_head(state, num_snakes - 1);
         state->snakes[num_snakes - 1].live = true;
       }
