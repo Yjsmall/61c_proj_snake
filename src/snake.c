@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
     }
     // TODO: Then call initialize_snakes on the state you made
     state = load_board(fp);
+    fclose(fp);
     initialize_snakes(state);
   } else if (io_stdin) {
     // TODO: Load the board from stdin
